@@ -23,9 +23,7 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     @JsonIgnore
     Set<Student> studentSet;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     private String name;
     private String details;
     private String location;
@@ -34,6 +32,9 @@ public class Course {
     private int maxParticipants;
     private String domain;
     private int participants;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber")
     private Teacher teacher;

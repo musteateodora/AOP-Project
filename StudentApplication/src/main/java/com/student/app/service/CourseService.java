@@ -3,7 +3,7 @@ package com.student.app.service;
 import com.student.app.exceptions.CourseNotFoundException;
 import com.student.app.model.Course;
 import com.student.app.model.Teacher;
-import com.student.app.model.dto.CourseDto;
+import com.student.app.model.dto.CourseDTO;
 import com.student.app.repository.CourseRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class CourseService {
         this.teacherService = teacherService;
     }
 
-    public CourseDto saveCourse(CourseDto courseDto) throws NotFoundException {
+    public CourseDTO saveCourse(CourseDTO courseDto) throws NotFoundException {
         Course course = mapCourseDTOtoDAO(courseDto);
         Teacher teacher = teacherService.getTeacher(courseDto.getTeacherPhoneNumber());
         course.setTeacher(teacher);
@@ -31,23 +31,36 @@ public class CourseService {
         return mapCourseDAOtoDTO(course);
     }
 
-    public CourseDto updateCourse(Course course) {
+    public CourseDTO updateCourse(Course course) {
         return mapCourseDAOtoDTO(courseRepository.save(course));
     }
 
-    public List<CourseDto> getAllCourses(Optional<String> domain) {
-        List<CourseDto> courses = new ArrayList<>();
+    public List<CourseDTO> getAllCourses(Optional<String> domain) {
+        List<CourseDTO> courses = new ArrayList<>();
         Iterator<Course> courseIterator;
         if (domain.isPresent()) {
             courseIterator = courseRepository.findAllByDomain(domain).iterator();
         } else {
             courseIterator = courseRepository.findAll().iterator();
         }
-        List<CourseDto> coursesDTO = new ArrayList<>();
+        List<CourseDTO> coursesDTO = new ArrayList<>();
         while (courseIterator.hasNext()) {
             Course course = courseIterator.next();
             courses.add(mapCourseDAOtoDTO(course));
 
+        }
+        return courses;
+    }
+
+    public List<CourseDTO> getAllCoursesByTeacher(String phoneNumber) {
+        List<CourseDTO> courses = new ArrayList<>();
+        List<Course> courseList = courseRepository.findAllByTeacher_PhoneNumber(phoneNumber);
+        if (null == courseList || courseList.isEmpty()) {
+            throw new CourseNotFoundException("Courses not found.");
+        }
+
+        for (Course course : courseList) {
+            courses.add(mapCourseDAOtoDTO(course));
         }
         return courses;
     }
@@ -57,14 +70,21 @@ public class CourseService {
     }
 
 
-    public Course mapCourseDTOtoDAO(CourseDto courseDTO) {
+    public void deleteCourse(Long courseId) {
+        Course courseToDelete = courseRepository.findById(courseId).orElseThrow(() ->
+                new CourseNotFoundException("Course not found"));
+        courseRepository.delete(courseToDelete);
+    }
+
+
+    public Course mapCourseDTOtoDAO(CourseDTO courseDTO) {
         return new Course(null, courseDTO.getName(), courseDTO.getDetails(), courseDTO.getLocation(),
                 courseDTO.getDateTime(), courseDTO.getDuration(), courseDTO.getMaxParticipants(),
                 courseDTO.getDomain(), 0, null, null);
     }
 
-    public CourseDto mapCourseDAOtoDTO(Course course) {
-        return new CourseDto(course.getId(), course.getName(), course.getDetails(), course.getLocation(),
+    public CourseDTO mapCourseDAOtoDTO(Course course) {
+        return new CourseDTO(course.getId(), course.getName(), course.getDetails(), course.getLocation(),
                 course.getDateTime(), course.getDuration(), course.getMaxParticipants(), course.getDomain(),
                 course.getTeacher().getPhoneNumber(), course.getParticipants());
     }

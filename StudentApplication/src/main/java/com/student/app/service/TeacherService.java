@@ -1,5 +1,6 @@
 package com.student.app.service;
 
+import com.student.app.exceptions.TeacherNotFoundException;
 import com.student.app.model.Teacher;
 import com.student.app.repository.TeacherRepository;
 import javassist.NotFoundException;
@@ -21,7 +22,7 @@ public class TeacherService {
     }
 
     public Teacher getTeacher(String phoneNumber) throws NotFoundException {
-        return teacherRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new NotFoundException("Teacher not found"));
+        return teacherRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new TeacherNotFoundException("Teacher not found"));
     }
 
     public List<Teacher> getTeachers() {
@@ -34,7 +35,7 @@ public class TeacherService {
 
     public void deleteTeacher(String phoneNumber) throws NotFoundException {
         Teacher teacherToDelete = teacherRepository.findByPhoneNumber(phoneNumber).orElseThrow(() ->
-                new NotFoundException("Teacher not found"));
+                new TeacherNotFoundException("Teacher not found"));
         teacherRepository.delete(teacherToDelete);
     }
 }

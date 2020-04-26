@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
     List<Course> findAllByDomain(Optional<String> domain);
+
+    List<Course> findAllByTeacher_PhoneNumber(String phoneNumber);
 }

@@ -1,10 +1,12 @@
 package com.student.app.service;
 
+import com.student.app.exceptions.MaxParticipantsException;
 import com.student.app.exceptions.StudentNotFoundException;
 import com.student.app.model.Course;
 import com.student.app.model.Student;
-import com.student.app.model.dto.CourseDto;
+import com.student.app.model.dto.CourseDTO;
 import com.student.app.repository.StudentRepository;
+import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +36,14 @@ public class StudentService {
     public void enroll(String phoneNumber, Long courseId) {
         Student student = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
         Course course = courseService.getCourseById(courseId);
-        student.getCourses().add(course);
-        studentRepository.save(student);
+        if (course.getParticipants() + 1 <= course.getMaxParticipants()) {
+            student.getCourses().add(course);
+            studentRepository.save(student);
+            course.setParticipants(course.getParticipants() + 1);
+            courseService.updateCourse(course);
+        } else {
+            throw new MaxParticipantsException("Sorry, you are unable to enroll on this course. We reached the maximum number of participants. ");
+        }
     }
 
     @Transactional
@@ -44,24 +52,36 @@ public class StudentService {
         Course course = courseService.getCourseById(courseId);
         student.getCourses().remove(course);
         studentRepository.save(student);
+        course.setParticipants(course.getParticipants() - 1);
+        courseService.updateCourse(course);
     }
 
     public Student identifyStudent(String phoneNumber) {
         return studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
     }
 
-    public List<CourseDto> getAllCourses(String phoneNumber) {
-        List<CourseDto> courses = new ArrayList<>();
+    public List<CourseDTO> getAllCourses(String phoneNumber) {
+        List<CourseDTO> courses = new ArrayList<>();
         Student student = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
 
         Iterator<Course> courseIterator = student.getCourses().iterator();
-        List<CourseDto> coursesDTO = new ArrayList<>();
+        List<CourseDTO> coursesDTO = new ArrayList<>();
         while (courseIterator.hasNext()) {
             Course course = courseIterator.next();
             courses.add(courseService.mapCourseDAOtoDTO(course));
 
         }
         return courses;
+    }
+
+    public List<Student> getAllStudents() {
+        return studentRepository.findAll();
+    }
+
+    public void deleteStudent(String phoneNumber) throws NotFoundException {
+        Student studentToDelete = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() ->
+                new StudentNotFoundException("Student not found"));
+        studentRepository.delete(studentToDelete);
     }
 
 

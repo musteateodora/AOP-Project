@@ -63,9 +63,7 @@ public class StudentService {
     public List<CourseDTO> getAllCourses(String phoneNumber) {
         List<CourseDTO> courses = new ArrayList<>();
         Student student = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
-
         Iterator<Course> courseIterator = student.getCourses().iterator();
-        List<CourseDTO> coursesDTO = new ArrayList<>();
         while (courseIterator.hasNext()) {
             Course course = courseIterator.next();
             courses.add(courseService.mapCourseDAOtoDTO(course));

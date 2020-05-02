@@ -2,26 +2,24 @@ package com.student.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course {
-    @ManyToMany(mappedBy = "courses")
-    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "student_course",
+            joinColumns = {@JoinColumn(name = "courseId")},
+            inverseJoinColumns = @JoinColumn(name = "phoneNumber"))
     Set<Student> studentSet;
 
     private String name;
@@ -32,10 +30,26 @@ public class Course {
     private int maxParticipants;
     private String domain;
     private int participants;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phoneNumber")
+    @JsonIgnore
+    private Teacher teacher;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return name.equals(course.name) &&
+                id.equals(course.id);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phoneNumber")
-    private Teacher teacher;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, id);
+    }
 }

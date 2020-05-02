@@ -18,6 +18,8 @@ public class Teacher {
     @Id
     private String phoneNumber;
     private String firstName;
+    private String lastName;
+    private String email;
 
     @Override
     public boolean equals(Object o) {
@@ -33,6 +35,5 @@ public class Teacher {
         return Objects.hash(phoneNumber, firstName);
     }
 
-    private String lastName;
-    private String email;
+
 }

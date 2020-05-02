@@ -79,13 +79,13 @@ public class CourseService {
 
     public Course mapCourseDTOtoDAO(CourseDTO courseDTO) {
         return new Course(null, courseDTO.getName(), courseDTO.getDetails(), courseDTO.getLocation(),
-                courseDTO.getDateTime(), courseDTO.getDuration(), courseDTO.getMaxParticipants(),
+                courseDTO.getDuration(), courseDTO.getMaxParticipants(),
                 courseDTO.getDomain(), 0, null, null);
     }
 
     public CourseDTO mapCourseDAOtoDTO(Course course) {
         return new CourseDTO(course.getId(), course.getName(), course.getDetails(), course.getLocation(),
-                course.getDateTime(), course.getDuration(), course.getMaxParticipants(), course.getDomain(),
+                course.getDuration(), course.getMaxParticipants(), course.getDomain(),
                 course.getTeacher().getPhoneNumber(), course.getParticipants());
     }
 

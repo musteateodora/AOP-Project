@@ -1,10 +1,7 @@
 package com.student.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Course {
     @ManyToMany
     @JoinTable(name = "student_course",
@@ -25,7 +23,6 @@ public class Course {
     private String name;
     private String details;
     private String location;
-    private long dateTime;
     private int duration;
     private int maxParticipants;
     private String domain;

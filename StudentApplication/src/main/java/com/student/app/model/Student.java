@@ -1,10 +1,7 @@
 package com.student.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +20,7 @@ public class Student {
     private String phoneNumber;
     private String firstName;
     private String lastName;
+    private String faculty;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "student_course",
@@ -39,7 +38,6 @@ public class Student {
                 phoneNumber.equals(student.phoneNumber);
     }
 
-    private String faculty;
 
     @Override
     public int hashCode() {

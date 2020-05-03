@@ -1,6 +1,8 @@
 package com.student.app.aspect;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -46,5 +48,23 @@ public class LoggingAspect {
                     joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
             throw ex;
         }
+    }
+
+    @AfterThrowing(pointcut = "executionPointCut() && beansPointCut()", throwing = "throwable")
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable throwable) {
+        logger.error("Exception in {}.{}(), with cause {}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName(),
+                throwable.getCause() != null ? throwable.getCause() : "null cause");
+    }
+
+    @Around("@annotation(ExecutionTime)")
+    public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.currentTimeMillis();
+
+        Object proceed = joinPoint.proceed();
+
+        long executionTime = System.currentTimeMillis() - start;
+
+        logger.debug("Method {} executed in {} ms", joinPoint.getSignature(), executionTime);
+        return proceed;
     }
 }

@@ -38,4 +38,5 @@ public class TeacherService {
                 new TeacherNotFoundException("Teacher not found"));
         teacherRepository.delete(teacherToDelete);
     }
+
 }

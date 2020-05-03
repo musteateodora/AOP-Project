@@ -17,7 +17,6 @@ public class CourseDTO {
     private String location;
     private int duration;
     private int maxParticipants;
-
     private String domain;
 
     @Override

@@ -31,8 +31,12 @@ public class CourseService {
         return mapCourseDAOtoDTO(course);
     }
 
-    public CourseDTO updateCourse(Course course) {
-        return mapCourseDAOtoDTO(courseRepository.save(course));
+    public CourseDTO updateCourse(CourseDTO courseDto) throws NotFoundException {
+        Course course = mapCourseDTOtoDAO(courseDto);
+        Teacher teacher = teacherService.getTeacher(courseDto.getTeacherPhoneNumber());
+        course.setTeacher(teacher);
+        courseRepository.save(course);
+        return mapCourseDAOtoDTO(course);
     }
 
     public List<CourseDTO> getAllCourses(Optional<String> domain) {

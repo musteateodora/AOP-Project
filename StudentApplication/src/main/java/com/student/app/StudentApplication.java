@@ -64,7 +64,7 @@ public class StudentApplication implements CommandLineRunner {
         Student firstStudent = Student.builder()
                 .firstName("Amitroaiei")
                 .lastName("Adrian")
-                .phoneNumber("0744111111")
+                .phoneNumber("0755555555")
                 .faculty("FMI")
                 .build();
         studentRepository.save(firstStudent);
@@ -72,7 +72,7 @@ public class StudentApplication implements CommandLineRunner {
         Student secondStudent = Student.builder()
                 .firstName("Burlacu")
                 .lastName("Ioana")
-                .phoneNumber("0744222222")
+                .phoneNumber("0766666666")
                 .faculty("FMI")
                 .build();
         studentRepository.save(secondStudent);

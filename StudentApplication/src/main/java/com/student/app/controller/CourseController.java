@@ -1,7 +1,6 @@
 package com.student.app.controller;
 
 import com.student.app.aspect.ExecutionTime;
-import com.student.app.model.Course;
 import com.student.app.model.dto.CourseDTO;
 import com.student.app.service.CourseService;
 import javassist.NotFoundException;
@@ -43,19 +42,16 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses(domain));
     }
 
-    @ExecutionTime
     @GetMapping("/{phoneNumber}")
     public ResponseEntity<List<CourseDTO>> getAllcoursesByTeacher(@PathVariable String phoneNumber) {
         return ResponseEntity.ok(courseService.getAllCoursesByTeacher(phoneNumber));
     }
 
-    @ExecutionTime
     @PutMapping
-    public ResponseEntity<CourseDTO> updateCourse(@RequestBody Course course) {
-        return ResponseEntity.ok(courseService.updateCourse(course));
+    public ResponseEntity<CourseDTO> updateCourse(@RequestBody CourseDTO courseDTO) throws NotFoundException {
+        return ResponseEntity.ok(courseService.updateCourse(courseDTO));
     }
 
-    @ExecutionTime
     @DeleteMapping("/{courseId}")
     public ResponseEntity deleteCourse(@PathVariable Long courseId) {
         courseService.deleteCourse(courseId);

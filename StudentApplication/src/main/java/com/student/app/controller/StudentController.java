@@ -1,5 +1,6 @@
 package com.student.app.controller;
 
+import com.student.app.aspect.ExecutionTime;
 import com.student.app.model.Student;
 import com.student.app.model.dto.CourseDTO;
 import com.student.app.service.StudentService;
@@ -26,11 +27,13 @@ public class StudentController {
         this.studentService = studentService;
     }
 
+    @ExecutionTime
     @PostMapping
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.saveStudent(student));
     }
 
+    @ExecutionTime
     @GetMapping("/{phoneNumber}")
     public ResponseEntity<Student> getStudent(@PathVariable String phoneNumber) {
         return ResponseEntity.ok(studentService.identifyStudent(phoneNumber));
@@ -53,14 +56,14 @@ public class StudentController {
     }
 
     @PostMapping("/{phoneNumber}/courses/{courseId}")
-    public ResponseEntity attendCourse(@PathVariable String phoneNumber, @PathVariable Long courseId) {
+    public ResponseEntity attendCourse(@PathVariable String phoneNumber, @PathVariable Long courseId) throws NotFoundException {
         studentService.enroll(phoneNumber, courseId);
         return ResponseEntity.ok().build();
 
     }
 
     @DeleteMapping("/{phoneNumber}/courses/{courseId}")
-    public ResponseEntity leaveCourse(@PathVariable String phoneNumber, @PathVariable Long courseId) {
+    public ResponseEntity leaveCourse(@PathVariable String phoneNumber, @PathVariable Long courseId) throws NotFoundException {
         studentService.leaveCourse(phoneNumber, courseId);
         return ResponseEntity.ok().build();
     }

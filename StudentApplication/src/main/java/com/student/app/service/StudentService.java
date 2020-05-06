@@ -33,27 +33,27 @@ public class StudentService {
     }
 
     @Transactional
-    public void enroll(String phoneNumber, Long courseId) {
+    public void enroll(String phoneNumber, Long courseId) throws NotFoundException {
         Student student = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
         Course course = courseService.getCourseById(courseId);
         if (course.getParticipants() + 1 <= course.getMaxParticipants()) {
             student.getCourses().add(course);
             studentRepository.save(student);
             course.setParticipants(course.getParticipants() + 1);
-            courseService.updateCourse(course);
+            courseService.updateCourse(courseService.mapCourseDAOtoDTO(course));
         } else {
             throw new MaxParticipantsException("Sorry, you are unable to enroll on this course. We reached the maximum number of participants. ");
         }
     }
 
     @Transactional
-    public void leaveCourse(String phoneNumber, Long courseId) {
+    public void leaveCourse(String phoneNumber, Long courseId) throws NotFoundException {
         Student student = studentRepository.findByPhoneNumber(phoneNumber).orElseThrow(() -> new StudentNotFoundException("Student not found"));
         Course course = courseService.getCourseById(courseId);
         student.getCourses().remove(course);
         studentRepository.save(student);
         course.setParticipants(course.getParticipants() - 1);
-        courseService.updateCourse(course);
+        courseService.updateCourse(courseService.mapCourseDAOtoDTO(course));
     }
 
     public Student identifyStudent(String phoneNumber) {

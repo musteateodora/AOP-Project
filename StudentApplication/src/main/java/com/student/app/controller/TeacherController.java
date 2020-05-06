@@ -1,5 +1,6 @@
 package com.student.app.controller;
 
+import com.student.app.aspect.ExecutionTime;
 import com.student.app.model.Teacher;
 import com.student.app.service.TeacherService;
 import javassist.NotFoundException;
@@ -27,12 +28,15 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
+    @ExecutionTime
     @PostMapping
     public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
         Teacher newTeacher = teacherService.saveTeacher(teacher);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(newTeacher);
     }
 
+    @ExecutionTime
     @GetMapping("/{phoneNumber}")
     public ResponseEntity<Teacher> getTeacher(@PathVariable String phoneNumber) throws NotFoundException {
         return ResponseEntity.ok(teacherService.getTeacher(phoneNumber));

@@ -2,6 +2,7 @@ package com.student.app.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class CourseDTO {
     private Long id;
     private String name;

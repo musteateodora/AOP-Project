@@ -1,5 +1,6 @@
 package com.student.app.model;
 
+import com.student.app.model.dto.EntityManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Teacher {
+public class Teacher extends EntityManager {
     @Id
     private String phoneNumber;
     private String firstName;
@@ -28,6 +29,17 @@ public class Teacher {
         Teacher teacher = (Teacher) o;
         return phoneNumber.equals(teacher.phoneNumber) &&
                 firstName.equals(teacher.firstName);
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", createdTime=" + createdTime +
+                '}';
     }
 
     @Override
